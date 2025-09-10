@@ -1,8 +1,9 @@
 
 const express = require('express')
 const router = express.Router()
-const {getHome, getAbout, getContact, postContact} = require('../controllers/userController')
+const {getContact, postContact} = require('../controllers/contactController')
+const {postUser} = require('../controllers/userController')
 
-router.get('/', getHome).get('/about', getAbout).get('/contact', getContact).post('/post-contact', postContact)
+router.get('/contact', getContact).post('/post-contact', postContact).post('/post-user', postUser)
 
 module.exports = router

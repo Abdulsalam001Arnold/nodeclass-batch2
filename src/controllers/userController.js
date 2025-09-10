@@ -1,38 +1,34 @@
+const { userValidator } = require("../validator/userValidator");
+const userModel = require("../models/userSchema");
 
-const contactModel = require('../models/contactSchema')
+const postUser = (req, res) => {
+  try {
+    const { username, email, password } = req.body;
 
-const getHome = (req, res) => {
-    res.redirect('/about')
-}
+    const { error } = userValidator.validate({ username, email, password });
 
-const getAbout = (req, res) => {
-    res.send(`You are making a ${req.method} request to this link: ${req.url}`)
-}
-
-const getContact = (req, res) => {
-    res.send('Contact me')
-}
-
-const postContact = async (req, res) => {
-    try {
-        const {fullName, email, phoneNumber, message} = req.body
-
-        if(email !== "" && message !== ""){
-            const contact = await contactModel.create({
-                fullName,
-                email,
-                phoneNumber,
-                message
-            })
-            res.status(201).json(contact)
-        }
-
-        res.status(400).json({error: 'Email and message is required'})
-
-    } catch (error) {
-        console.error(error)
-        res.status(500).json({error: 'Internal server error!!'})
+    if (error) {
+      return res.status(400).json({
+        error: error.details[0].message,
+      });
     }
-}
 
-module.exports = { getHome, getAbout, getContact, postContact }
+    const user = userModel.create({
+      username,
+      email,
+      password,
+    });
+
+    return res.status(201).json({
+      message: "User created successfully",
+      user,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      reason: "Internal server error",
+    });
+  }
+};
+
+module.exports = { postUser }
