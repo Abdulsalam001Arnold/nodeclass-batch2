@@ -6,7 +6,9 @@ const app = express()
 require('dotenv').config()
 const userRoute = require('./routes/userRoute')
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 30000
+})
 .then(() => console.log('Database connected!!'))
 .catch((err) => console.error(err))
 
