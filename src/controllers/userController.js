@@ -1,13 +1,19 @@
 const { userValidator } = require("../validator/userValidator");
 const userModel = require("../models/userSchema");
+const { profileModel } = require("../models/profileSchema");
 const bycrypt = require("bcryptjs");
-const {generateToken} = require('../middleware/generateToken')
+const { generateToken } = require("../middleware/generateToken");
 
 const postUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, bio } = req.body;
 
-    const { error } = userValidator.validate({ username, email, password });
+    const { error } = userValidator.validate({
+      username,
+      email,
+      password,
+      bio,
+    });
 
     if (error) {
       return res.status(400).json({
@@ -20,16 +26,28 @@ const postUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists!!" });
     }
 
-    const user = userModel.create({
+    const profile = await profileModel.create({
+      bio,
+      user: null,
+    });
+
+    const user = await userModel.create({
       username,
       email,
       password,
+      profile: profile._id,
     });
+
+    await profileModel.findByIdAndUpdate(profile._id, { user: user._id });
+
+    const populatedUser = await userModel
+      .findById(user._id)
+      .populate("profile");
 
     return res.status(201).json({
       message: "User created successfully",
-      user,
-      token: generateToken((await user)._id)
+      populatedUser,
+      token: generateToken(user._id),
     });
   } catch (err) {
     console.error(err);
@@ -61,28 +79,69 @@ const login = async (req, res) => {
     return res.status(200).json({
       message: "User logged in",
       existingUser,
-      token: generateToken(existingUser._id)
+      token: generateToken(existingUser._id),
     });
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 };
 
-const getAll = async(req, res) => {
+const getAll = async (req, res) => {
   try {
-    const users = await userModel.find()
+    const users = await userModel.find();
 
-    if(!users) return res.status(404).json({
-      message: 'No users found.'
-    })
+    if (!users)
+      return res.status(404).json({
+        message: "No users found.",
+      });
 
-    res.status(200).json(users)
+    res.status(200).json(users);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).json({
-      reason: error.message
-    })
+      reason: error.message,
+    });
   }
-}
+};
 
-module.exports = { postUser, login, getAll };
+const getSingle = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await userModel.findById(id);
+    if (!user)
+      return res.status(404).json({
+        message: "User not found.",
+      });
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      reason: err.message,
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedUser = await userModel.findByIdAndDelete(id);
+    if (!deletedUser)
+      return res.status(404).json({
+        message: "User not found.",
+      });
+
+    res.status(200).json({
+      message: "User deleted successfully!",
+      deletedUser,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      reason: err.message,
+    });
+  }
+};
+
+module.exports = { postUser, login, getAll, getSingle, deleteUser };

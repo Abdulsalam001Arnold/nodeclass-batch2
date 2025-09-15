@@ -19,6 +19,11 @@ const userSchema = new mongoose.Schema({
     minLength: 6,
     maxLength: 15,
   },
+  profile: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Profile",
+    required: true,
+  }
 }, {timestamps: true});
 
 userSchema.pre('save', async function (next) {
