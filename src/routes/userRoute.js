@@ -6,6 +6,6 @@ const {postUser, login, getAll, getSingle, deleteUser} = require('../controllers
 const {protect} = require('../middleware/authMiddleware')
 const {upload} = require("../utils/upload")
 
-router.get('/contact', getContact).post('/post-contact', postContact).post('/post-user', upload.single("profilePicture"), postUser).post('/login', login).get('/all-users', protect, getAll).get("/get-single/:id", protect, getSingle).delete("/delete/:id", protect, deleteUser)
+router.get('/contact', getContact).post('/post-contact', postContact).post('/post-user', upload.single("profilePicture"),postUser).post('/login', login).get('/all-users', protect, getAll).get("/get-single/:id", protect, getSingle).delete("/delete/:id", protect, deleteUser)
 
 module.exports = router

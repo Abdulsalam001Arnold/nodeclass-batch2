@@ -8,6 +8,9 @@ const postUser = async (req, res) => {
   try {
     const { username, email, password, bio } = req.body;
 
+      const profilePicture = req.file ? req.file.filename : null;
+    
+
     const { error } = userValidator.validate({
       username,
       email,
@@ -28,6 +31,7 @@ const postUser = async (req, res) => {
 
     const profile = await profileModel.create({
       bio,
+      profilePicture,
       user: null,
     });
 
