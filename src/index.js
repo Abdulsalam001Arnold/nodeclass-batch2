@@ -23,7 +23,12 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(userRoute)
 
-app.listen(3000, () => {
-    console.log('Server running on port 3000')
-})
+if(process.env.NODE_ENV !== 'production') {
+    app.listen(3000, () => {
+        console.log('Server running on port 3000')
+    })
+}
+
+module.exports = app
+
 
