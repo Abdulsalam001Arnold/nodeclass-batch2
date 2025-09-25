@@ -3,12 +3,17 @@ const userModel = require("../models/userSchema");
 const { profileModel } = require("../models/profileSchema");
 const bycrypt = require("bcryptjs");
 const { generateToken } = require("../middleware/generateToken");
+const {cloudUpload} = require("../utils/cloudUpload")
 
 const postUser = async (req, res) => {
   try {
     const { username, email, password, bio } = req.body;
 
-      const profilePicture = req.file ? req.file.filename : null;
+      let profilePictureUrl = ""
+
+      if(req.file) {
+        profilePictureUrl = await cloudUpload(req.file.buffer)
+      }
     
 
     const { error } = userValidator.validate({
@@ -31,7 +36,7 @@ const postUser = async (req, res) => {
 
     const profile = await profileModel.create({
       bio,
-      profilePicture,
+      profilePicture: profilePictureUrl,
       user: null,
     });
 
