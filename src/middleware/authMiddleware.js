@@ -2,7 +2,6 @@
 
 const jwt = require('jsonwebtoken');
 const User = require('../models/userSchema');
-require('dotenv').config()
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
@@ -16,6 +15,7 @@ const protect = async (req, res, next) => {
 
       // Verifing my token
       const decoded = jwt.verify(token, JWT_SECRET);
+      console.log("token secret:", JWT_SECRET)
 
       
       req.user = await User.findById(decoded.id).select('-password');

@@ -67,9 +67,8 @@ const postUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body;
-
     const existingUser = await userModel.findOne({ email }).populate("profile");
 
     if (!existingUser)

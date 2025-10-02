@@ -24,6 +24,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(userRoute)
 
 app.get('/', (req, res) => {
+    console.log(process.env.JWT_SECRET_KEY)
     res.send('API is running...')
 })
 
