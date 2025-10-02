@@ -70,7 +70,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const existingUser = await userModel.findOne({ email });
+    const existingUser = await userModel.findOne({ email }).populate("profile");
 
     if (!existingUser)
       return res
@@ -97,7 +97,7 @@ const login = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const users = await userModel.find();
+    const users = await userModel.find().populate("profile");
 
     if (!users)
       return res.status(404).json({
@@ -116,7 +116,7 @@ const getAll = async (req, res) => {
 const getSingle = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await userModel.findById(id);
+    const user = await userModel.findById(id).populate("profile");
     if (!user)
       return res.status(404).json({
         message: "User not found.",

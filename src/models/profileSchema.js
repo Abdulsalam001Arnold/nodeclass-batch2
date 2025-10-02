@@ -5,7 +5,8 @@ const profileSchema = new mongoose.Schema({
     bio: { type: String },
     profilePicture: {
       type: String,
-      default: ""
+      default: "",
+      required: false
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
