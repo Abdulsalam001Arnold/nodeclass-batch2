@@ -9,7 +9,6 @@ const userRoute = require('./routes/userRoute')
 
 mongoose.connect(process.env.MONGODB_URI, {
     serverSelectionTimeoutMS: 40000,
-    bufferCommands: false,
     heartbeatFrequencyMS: 10000,
     socketTimeoutMS: 40000,
 })
