@@ -1,7 +1,7 @@
 const { userValidator } = require("../validator/userValidator");
 const userModel = require("../models/userSchema");
 const { profileModel } = require("../models/profileSchema");
-const bycrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const { generateToken } = require("../middleware/generateToken");
 const {cloudUpload} = require("../utils/cloudUpload")
 
@@ -76,7 +76,7 @@ const login = async (req, res) => {
         .status(400)
         .json({ message: "User does not exist, please sign up." });
 
-    const checkPassword = await bycrypt.compare(
+    const checkPassword = await bcrypt.compare(
       password,
       existingUser.password
     );
@@ -90,7 +90,8 @@ const login = async (req, res) => {
       token: generateToken(existingUser._id),
     });
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
