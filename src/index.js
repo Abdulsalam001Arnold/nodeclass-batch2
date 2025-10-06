@@ -8,7 +8,10 @@ require('dotenv').config()
 const userRoute = require('./routes/userRoute')
 
 mongoose.connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 30000
+    serverSelectionTimeoutMS: 40000,
+    bufferCommands: false,
+    heartbeatFrequencyMS: 10000,
+    socketTimeoutMS: 40000,
 })
 .then(() => console.log('Database connected!!'))
 .catch((err) => console.error(err))
