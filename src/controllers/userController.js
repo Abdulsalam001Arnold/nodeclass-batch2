@@ -4,6 +4,7 @@ const { profileModel } = require("../models/profileSchema");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../middleware/generateToken");
 const {cloudUpload} = require("../utils/cloudUpload")
+const connectDB = require('../config/db')
 
 const postUser = async (req, res) => {
   try {
