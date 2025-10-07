@@ -67,20 +67,16 @@ const postUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
   try {
+    await connectDB(); // ensures DB is ready
+
+    const { email, password } = req.body;
     const existingUser = await userModel.findOne({ email }).populate("profile");
 
     if (!existingUser)
-      return res
-        .status(400)
-        .json({ message: "User does not exist, please sign up." });
+      return res.status(400).json({ message: "User does not exist, please sign up." });
 
-    const checkPassword = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
-
+    const checkPassword = await bcrypt.compare(password, existingUser.password);
     if (!checkPassword)
       return res.status(400).json({ message: "Invalid Credentials" });
 
@@ -91,7 +87,7 @@ const login = async (req, res) => {
     });
   } catch (error) {
     console.error("Login error:", error);
-    return res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
