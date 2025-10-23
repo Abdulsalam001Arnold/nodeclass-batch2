@@ -7,7 +7,7 @@ let isConnected = false;
 
 const connectDB = async () => {
   if (isConnected) {
-    console.log("✅ Using existing MongoDB connection");
+    console.log(" Using existing MongoDB connection");
     return;
   }
 
@@ -19,9 +19,9 @@ const connectDB = async () => {
     });
 
     isConnected = db.connections[0].readyState;
-    console.log("🚀 New MongoDB connection established!");
+    console.log(" New MongoDB connection established!");
   } catch (err) {
-    console.error("❌ MongoDB connection failed:", err.message);
+    console.error("MongoDB connection failed:", err.message);
     throw err;
   }
 };

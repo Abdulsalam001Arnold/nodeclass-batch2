@@ -5,9 +5,10 @@ const bcrypt = require("bcryptjs");
 const { generateToken } = require("../middleware/generateToken");
 const {cloudUpload} = require("../utils/cloudUpload")
 const connectDB = require('../config/db')
+const { asyncHandler }  = require("../utils/asyncHandler")
 
-const postUser = async (req, res) => {
-  try {
+const postUser = asyncHandler(async (req, res) => {
+
     const { username, email, password, bio } = req.body;
 
       let profilePictureUrl = ""
@@ -59,13 +60,7 @@ const postUser = async (req, res) => {
       populatedUser,
       token: generateToken(user._id),
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      reason: "Internal server error",
-    });
-  }
-};
+});
 
 const login = async (req, res) => {
   try {
